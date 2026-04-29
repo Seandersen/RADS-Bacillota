@@ -1,20 +1,46 @@
 # Snakemake
 .snakemake/
 logs/
-results/
 
 # Pixi
 .pixi/
 pixi.lock
 
-# Data files
+# Large sequence/database files (not needed for dashboard)
 *.fna
 *.faa
 *.fasta
 *.fastq
 *.gz
-*.tsv
 *.dmnd
+*.db
+
+# Genome downloads (large)
+results/*/genomes/
+
+# Intermediate ORF/contig sequence files (large)
+results/*/contig_orfs/
+results/*/orf_extraction/
+results/*/all_contigs.fna
+results/*/all_contigs_filtered.fna
+
+# Exclude TSVs by default, but re-include specific dashboard data files
+*.tsv
+*.csv
+
+# Keep key results files needed for the dashboard
+!results/*/blast_results/master_blast.txt
+!results/*/defensefinder/defense_finder_genes.tsv
+!results/*/defensefinder/defense_finder_systems.tsv
+!results/*/cotranscription/*.txt
+!results/*/cotranscription/*.tsv
+!results/*/interproscan_results.tsv
+!results/*/BinomialAnalysis.csv
+!results/*/defense_scores.tsv
+!results/*/metrics/pipeline_metrics.json
+!results/*/genome_manifest.txt
+!results/*/*.py
+!results/*/figures/
 
 # Keep config example
 !config/config.yaml
@@ -35,6 +61,7 @@ __pycache__/
 
 # OS
 .DS_Store
+._*
 Thumbs.db
 
 # Temp files

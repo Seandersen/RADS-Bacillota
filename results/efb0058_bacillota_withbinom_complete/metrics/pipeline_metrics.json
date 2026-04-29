@@ -1,0 +1,14 @@
+{
+  "total_input_bases": 44046605609,
+  "total_input_mb": 44046.61,
+  "blast_hits": 9478,
+  "hits_per_mb": 0.215,
+  "defense_systems": 5891,
+  "contigs_analyzed": 8656,
+  "discovery_rate_per_contig": 0.681,
+  "total_genomes": 13553,
+  "discovery_rate_per_genome": 0.435,
+  "query_file": "resources/EFB0058.fa",
+  "query_name": "EFB_0058",
+  "sample_name": "efb0058_bacillota_withbinom"
+}
