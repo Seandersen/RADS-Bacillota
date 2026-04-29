@@ -12,6 +12,7 @@ RADS was developed by Shelby E Andersen in collaboration with Joshua M Kirsch, J
 | Query | EFB_0058 recombinase |
 | Total genomes | 13,553 |
 | BLAST hits | 9,478 |
+| Hits per Mb | 0.215 |
 | Contigs analyzed | 8,656 |
 | Defense genes identified | 4,247 |
 | Co-transcribed ORFs | 2,827 |
