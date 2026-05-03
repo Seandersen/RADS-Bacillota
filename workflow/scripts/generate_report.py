@@ -162,12 +162,11 @@ def load_blast(results_dir: Path) -> list:
 
 
 def load_defensefinder(results_dir: Path) -> list:
-    """Load defense systems (one row per unique sys_id)."""
+    """Load defense gene instances (one row per gene hit, not deduplicated by sys_id)."""
     f = results_dir / "defensefinder" / "defense_finder_systems.tsv"
     if not f.exists():
         return []
     rows = []
-    seen_sys = set()
     with open(f) as fh:
         for line in fh:
             line = line.strip()
@@ -181,9 +180,6 @@ def load_defensefinder(results_dir: Path) -> list:
             subtype = fqn_parts[-1] if fqn_parts else "Unknown"
             system_type = fqn_parts[-2] if len(fqn_parts) >= 2 else subtype
             sys_id = parts[5] if len(parts) > 5 else ""
-            if sys_id in seen_sys:
-                continue
-            seen_sys.add(sys_id)
             rows.append({
                 "sys_id": sys_id,
                 "type": system_type,
@@ -392,7 +388,7 @@ def chart_pipeline_funnel(metrics: dict, blast: list, defense: list) -> str:
     def_systems = len(defense)
 
     stages = ["Input Genomes", "Genomes with BLAST Hits",
-              "Contigs Analyzed", "Defense Systems"]
+              "Contigs Analyzed", "Defense Gene Instances"]
     values = [genomes, blast_genomes, contigs, def_systems]
 
     colors = [TEAL[0], TEAL[1], TEAL[2], TEAL[3]]
@@ -692,13 +688,13 @@ def chart_defense_categories(defense: list) -> str:
     fig = go.Figure(go.Bar(
         x=list(labels), y=list(vals),
         marker_color=colors,
-        hovertemplate="<b>%{x}</b><br>Systems: %{y}<extra></extra>",
+        hovertemplate="<b>%{x}</b><br>Instances: %{y}<extra></extra>",
     ))
     fig.update_layout(
         **_layout(margin=dict(t=50, b=110, l=70, r=30)),
-        title="Defense Systems by Antiphage Category",
+        title="Defense System Gene Instances by Antiphage Category",
         xaxis_title="Category",
-        yaxis_title="Number of Systems",
+        yaxis_title="Number of Instances",
         xaxis_tickangle=-25,
         height=380,
     )
@@ -726,7 +722,7 @@ def chart_defense_sunburst(defense: list) -> str:
     fig = go.Figure(go.Sunburst(
         ids=ids, parents=parents, labels=labels, values=values,
         marker=dict(colors=colors),
-        hovertemplate="<b>%{label}</b><br>Systems: %{value}<extra></extra>",
+        hovertemplate="<b>%{label}</b><br>Instances: %{value}<extra></extra>",
         insidetextorientation="radial",
         branchvalues="total",
     ))
@@ -754,12 +750,12 @@ def chart_defense_top_types(defense: list) -> str:
     fig = go.Figure(go.Bar(
         y=list(labels), x=list(vals), orientation="h",
         marker_color=colors,
-        hovertemplate="<b>%{y}</b><br>Systems: %{x}<extra></extra>",
+        hovertemplate="<b>%{y}</b><br>Instances: %{x}<extra></extra>",
     ))
     fig.update_layout(
         **_layout(margin=dict(t=50, b=40, l=180, r=30)),
-        title="Top 15 Defense System Types",
-        xaxis_title="Number of Systems",
+        title="Top 15 Defense System Types by Instance Count",
+        xaxis_title="Number of Instances",
         yaxis=dict(categoryorder="total ascending"),
         height=420,
     )
@@ -775,7 +771,7 @@ def chart_defense_table(defense: list) -> str:
                _esc(r.get("subtype", "")), _esc(r.get("category", ""))]
               for r in defense],
         table_id="defense-table",
-        caption=f"{len(defense)} unique defense systems identified",
+        caption=f"{len(defense):,} defense gene instances identified",
     )
 
 
@@ -1430,7 +1426,7 @@ def build_html(
         metric_card("Total Input",       fmt(metrics.get("total_input_mb"), 1) + " Mb", "sequenced"),
         metric_card("BLAST Hits",        fmt(metrics.get("blast_hits")),                "query matches"),
         metric_card("Hits per Mb",       fmt(metrics.get("hits_per_mb"), 3),            ""),
-        metric_card("Defense Systems",   fmt(metrics.get("defense_systems")),           "DefenseFinder"),
+        metric_card("Defense Gene Instances", fmt(metrics.get("defense_systems")),       "DefenseFinder"),
         metric_card("Contigs Analyzed",  fmt(metrics.get("contigs_analyzed")),          "flanking regions"),
         metric_card("Co-tx Pairs",       fmt(len(cotx)),                                ""),
         metric_card("IPS Annotations",   fmt(len(ips)),                                 "domain hits"),
