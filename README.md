@@ -14,7 +14,7 @@ RADS was developed by Shelby E Andersen in collaboration with Joshua M Kirsch, J
 | BLAST hits | 9,478 |
 | Hits per Mb | 0.215 |
 | Contigs analyzed | 8,656 |
-| Defense genes identified | 4,247 |
+| Defense genes identified | 4,176 |
 | Co-transcribed ORFs | 2,827 |
 
 Results are in `results/efb0058_bacillota_withbinom_complete/`.
